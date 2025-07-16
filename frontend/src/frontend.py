@@ -82,7 +82,7 @@ if st.session_state.audio_data:
                 else:  # Recorded audio (bytes)
                     files = {'audio_file': ("recording.wav", audio_data, "audio/wav")}
                 try:
-                    response = requests.post(API_URL + '/transcribe', files=files)
+                    response = requests.post(API_URL + '/transcribe', files=files, params={'summarize': True})
                     result = response.json()
                 except Exception as e:
                     result = {'error': str(e)}

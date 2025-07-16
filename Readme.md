@@ -7,6 +7,14 @@ This project is a speech-to-text service powered by OpenAI's Whisper model, runn
 - Uses OpenAI Whisper for high-quality transcription
 - Simple API interface
 
+## Tech stack
+Frontend:
+- Streamlit
+
+Backend:
+- OpenAI's Whisper model through Huggingface's transformers library
+- Gemma  
+
 ## Prerequisites
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
@@ -14,16 +22,20 @@ This project is a speech-to-text service powered by OpenAI's Whisper model, runn
 ## Installation & Usage
 1. Clone this repository:
    ```bash
-   git clone <your-repo-url>
-   cd audio_transcript
+   git clone https://github.com/nicolasdartayeta/speech-to-text.git
+   cd speech-to-text
    ```
 2. Start the service:
    ```bash
    docker-compose up
    ```
    This will build and start both the backend and frontend containers.
+   You will likely need to wait a couple of minutes while the models are downloaded.
 
-## API Usage
+## Troubleshooting
+Check the backend's console. Since Google's Gemma model is gated it will likely ask you to provive a token from your Huggingface account.
+
+## App Usage
 Once running, access the service through the provided frontend interface ([http://localhost:8501](http://localhost:8501)). Direct API usage is not required for typical users.
 
 ## Project Structure
