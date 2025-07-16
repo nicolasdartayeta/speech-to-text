@@ -2,6 +2,8 @@ FROM python:3.13
 
 RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 
+COPY .env .
+
 # Set the working directory inside the container
 WORKDIR /src
 

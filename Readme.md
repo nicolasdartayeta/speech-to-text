@@ -1,11 +1,12 @@
 # Audio Transcript Service
 
-This project is a speech-to-text service powered by OpenAI's Whisper model, running locally via Docker. It provides an API for transcribing audio files to text.
+This project is a speech-to-text service powered by OpenAI's Whisper model, running locally via Docker. It provides a web interface for transcribing audio files to text.
 
 ## Features
 - Local deployment (no cloud required)
 - Uses OpenAI Whisper for high-quality transcription
-- Simple API interface
+- Uses Google Gemini for summarization.
+- Simple web interface
 
 ## Tech stack
 Frontend:
@@ -13,7 +14,7 @@ Frontend:
 
 Backend:
 - OpenAI's Whisper model through Huggingface's transformers library
-- Gemma  
+- Google's genai api. It uses gemini-2.0-flash to create summaries.  
 
 ## Prerequisites
 - [Docker](https://www.docker.com/get-started)
@@ -33,7 +34,7 @@ Backend:
    You will likely need to wait a couple of minutes while the models are downloaded.
 
 ## Troubleshooting
-Check the backend's console. Since Google's Gemma model is gated it will likely ask you to provive a token from your Huggingface account.
+Change the .env file in the backend to add your GEMINI_API_KEY
 
 ## App Usage
 Once running, access the service through the provided frontend interface ([http://localhost:8501](http://localhost:8501)). Direct API usage is not required for typical users.

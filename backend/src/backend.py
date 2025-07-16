@@ -4,6 +4,12 @@ import logging
 
 import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from google import genai
+from google.genai import types
+from dotenv import load_dotenv
+load_dotenv()
+
+client = genai.Client()
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
@@ -26,41 +32,31 @@ trans_pipe = pipeline(
     device=device,
 )
 
-summ_pipe = pipeline(
-    "image-text-to-text",
-    model="google/gemma-3n-e4b-it",
-    device=device,
-    torch_dtype=torch_dtype,
-)
-
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+from fastapi import Query
+
 @app.post('/transcribe')
-async def transcribe(audio_file: UploadFile, options: dict) -> dict[str, str | None]:
+async def transcribe(audio_file: UploadFile, summarize: bool = Query(False)) -> dict[str, str | None]:
     response = {}
     audio_bytes = await audio_file.read()
     response['transcription'] = trans_pipe(audio_bytes, return_timestamps=True)["text"]
 
-    if 'summarize' in options and options['summarize']:
+    if summarize:
         transcript = response["transcription"]
-        summ_message = [
-            {
-                "role": "system",
-                "content": [{"type": "text", "text": "You are a professional summarizer in charge of summarizing audio transcriptions."}]
-            },
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": f"{transcript}"}
-                ]
-            }
-        ]
-        summary = summ_pipe(text=summ_message)
-        response['summary'] = summary[0]["generated_text"][-1]["content"]
+        summary = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=transcript,
+            config=types.GenerateContentConfig(
+                system_instruction="You are a professional summarizer in charge of summarizing audio transcriptions. You must mantain the original language of the transcription. Just return the summary without any additional text, context, or explanation.",
+            ),
+        )
+        response['summary'] = summary.text
+
     return response
 
 if __name__ == "__main__":

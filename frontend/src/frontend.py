@@ -17,6 +17,8 @@ if 'audio_data' not in st.session_state:
 if 'transcribe_disabled' not in st.session_state:
     st.session_state.transcribe_disabled = False
 
+summarize = st.checkbox('Summarize')
+
 selection = st.segmented_control(
     "Select wheter you want to record yourself or upload an audio file: ",
     options=options.keys(),
@@ -82,7 +84,7 @@ if st.session_state.audio_data:
                 else:  # Recorded audio (bytes)
                     files = {'audio_file': ("recording.wav", audio_data, "audio/wav")}
                 try:
-                    response = requests.post(API_URL + '/transcribe', files=files, params={'summarize': True})
+                    response = requests.post(f"{API_URL}/transcribe?summarize={summarize}", files=files)
                     result = response.json()
                 except Exception as e:
                     result = {'error': str(e)}
