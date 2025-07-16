@@ -49,10 +49,11 @@ async def transcribe(audio_file: UploadFile, summarize: bool = Query(False)) -> 
     if summarize:
         transcript = response["transcription"]
         summary = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=transcript,
+            model="gemini-2.5-flash",
+            contents="Even though my instructions are in english I want you to respect the original language of the transcript: " + transcript,
             config=types.GenerateContentConfig(
-                system_instruction="You are a professional summarizer in charge of summarizing audio transcriptions. You must mantain the original language of the transcription. Just return the summary without any additional text, context, or explanation.",
+                system_instruction="You are a professional summarizer in charge of summarizing audio transcriptions. You must respect the original language of the transcription and make the summary in the same language. Only return the summary without any additional text, context, or explanation.",
+                temperature=1,
             ),
         )
         response['summary'] = summary.text

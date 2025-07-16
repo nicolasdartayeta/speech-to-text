@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 API_URL = 'http://backend:8000'
-st.title("Friendly audio to text app")
+st.title("Friendly speech-to-text app")
 
 options = {
     0: "Record",
@@ -91,5 +91,12 @@ if st.session_state.audio_data:
             elapsed_time = _time.time() - start_time
             result['processing_time_seconds'] = f'{round(elapsed_time, 2)}'
         enable_button()
-        st.write(result)
+        # Display results in a nice format
+        if 'error' in result:
+            st.error(f"Error: {result['error']}")
+        else:
+            st.success(f"Transcription completed in {result.get('processing_time_seconds', 'N/A')} seconds!")
+            st.markdown(f"**Transcription:**\n{result.get('transcription', 'N/A')}")
+            if summarize and 'summary' in result:
+                st.markdown(f"**Summary:**\n{result['summary']}")
 
