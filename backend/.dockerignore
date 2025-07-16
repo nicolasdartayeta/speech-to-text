@@ -1,0 +1,17 @@
+# Git and IDE files
+.git
+.vscode
+.idea
+
+# Python virtual environment and cache
+.venv
+venv
+__pycache__
+*.pyc
+
+# Docker-specific
+docker-compose.yml
+Dockerfile
+
+# Other
+README.md

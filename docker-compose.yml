@@ -1,0 +1,27 @@
+services:
+  # The FastAPI backend service
+  backend:
+    build:
+      context: ./backend # Tells Docker Compose to look for the Dockerfile in the ./backend directory
+    ports:
+      # Expose the backend's port 8000 to your local machine's port 8000
+      - "8000:8000"
+    volumes:
+      # Mount local backend code for live-reloading during development
+      - ./backend/src:/src
+    # Override the CMD for development to enable auto-reloading
+    command: uvicorn backend:app --host 0.0.0.0 --port 8000 --reload
+
+  # The Streamlit frontend service
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      # Expose the frontend's port 8501 to your local machine's port 8501
+      - "8501:8501"
+    volumes:
+      # Mount local frontend code for live changes
+      - ./frontend/src:/src
+    # This service depends on the backend being available
+    depends_on:
+      - backend
